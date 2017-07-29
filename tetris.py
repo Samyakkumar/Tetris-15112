@@ -15,15 +15,8 @@ import random
 ####################################
 # customize these functions
 ####################################
-# received this beautiful code from the course website 15-112 Fall 15
-def make2dList(rows, cols, color):
 
-    a = []
-    for row in range(rows):
-        a += [[color] * cols]
-    return a
-
-
+####################    MODEL    ####################
 def init(data):
 
         # Seven "standard" pieces (tetrominoes)
@@ -70,9 +63,10 @@ def init(data):
     "orange"]
     data.tetrisPieces = tetrisPieces
     data.tetrisPieceColors = tetrisPieceColors
+    # Initialize the falling piece
     newFallingPiece(data)
 
-
+###############      CONTROLLERS      #######################
 def newFallingPiece(data):
     # Pick a falling piece and color randomly
     fallingPiece = random.choice(data.tetrisPieces)
@@ -95,12 +89,35 @@ def mousePressed(event, data):
 
 def keyPressed(event, data):
     # use event.char and event.keysym
+    # Make a new falling piece
     newFallingPiece(data)
 
 
 def timerFired(data):
     pass
 
+# Code taken from  https://www.cs.cmu.edu/~112/notes/notes-tetris/tetris-after-step-2.py
+def getCellBounds(row, col, data):
+    # returns (x0, y0, x1, y1) corners/bounding box of given cell in grid
+    gridWidth = data.width - 2 * data.margin
+    gridHeight = data.height - 2 * data.margin
+    x0 = data.margin + gridWidth * col / data.cols
+    x1 = data.margin + gridWidth * (col + 1) / data.cols
+    y0 = data.margin + gridHeight * row / data.rows
+    y1 = data.margin + gridHeight * (row + 1) / data.rows
+    return (x0, y0, x1, y1)
+
+# received this beautiful code from the course website 15-112 Fall 15
+def make2dList(rows, cols, color):
+
+    a = []
+    for row in range(rows):
+        a += [[color] * cols]
+    return a
+
+
+
+#########    VIEW    ####################
 
 def redrawAll(canvas, data):
     drawGame(canvas, data)
@@ -118,8 +135,9 @@ def drawFallingPiece(canvas, data):
     for row in range(len(data.fallingPiece)):
         for col in range(len(data.fallingPiece[row])):
             cell = data.fallingPiece[row][col]
-            if cell: drawCell(canvas, row + data.fallingPieceRow,
-            col + data.fallingPieceCol, data.fallingPieceColor, data)
+            if cell:
+                drawCell(canvas, row + data.fallingPieceRow,
+                     col + data.fallingPieceCol, data.fallingPieceColor, data)
 
 def drawBoard(canvas, data):
     # iterate through the board
@@ -127,19 +145,6 @@ def drawBoard(canvas, data):
         for col in range(data.cols):
             color = data.board[row][col]
             drawCell(canvas,row,col,color,data)
-
-
-
-# Code taken from  https://www.cs.cmu.edu/~112/notes/notes-tetris/tetris-after-step-2.py
-def getCellBounds(row, col, data):
-    # returns (x0, y0, x1, y1) corners/bounding box of given cell in grid
-    gridWidth = data.width - 2 * data.margin
-    gridHeight = data.height - 2 * data.margin
-    x0 = data.margin + gridWidth * col / data.cols
-    x1 = data.margin + gridWidth * (col + 1) / data.cols
-    y0 = data.margin + gridHeight * row / data.rows
-    y1 = data.margin + gridHeight * (row + 1) / data.rows
-    return (x0, y0, x1, y1)
 
 
 def drawCell(canvas,row,col,color,data):
