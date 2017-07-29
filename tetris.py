@@ -90,7 +90,14 @@ def mousePressed(event, data):
 def keyPressed(event, data):
     # use event.char and event.keysym
     # Make a new falling piece
-    newFallingPiece(data)
+    if event.keysym == "Left":
+        moveFallingPiece(data, 0, -1)
+    elif event.keysym == "Right":
+        moveFallingPiece(data, 0, 1)
+    elif event.keysym == "Down":
+        moveFallingPiece(data, 1, 0)
+    else:
+        newFallingPiece(data)
 
 
 def timerFired(data):
@@ -114,6 +121,42 @@ def make2dList(rows, cols, color):
     for row in range(rows):
         a += [[color] * cols]
     return a
+
+def moveFallingPiece(data, drow, dcol):
+    # Modify the data values for the falling pieces
+    # Make the first move
+    data.fallingPieceRow += drow
+    data.fallingPieceCol += dcol
+    # Check if the move made is legal
+    if not fallingPieceIsLegal(data):
+        print("Not legal")
+        # Rest the value to the previous
+        data.fallingPieceRow -= drow
+        data.fallingPieceCol -= dcol
+
+def fallingPieceIsLegal(data):
+    for row in range(len(data.fallingPiece)):
+        for col in range(len(data.fallingPiece[row])):
+            cellRow, cellCol = row + data.fallingPieceRow, col + data.fallingPieceCol
+            if data.board[cellRow][cellCol] != 'blue':
+                return False
+            elif not inBoard(data, cellRow, cellCol):
+                return False
+    return True
+
+def inBoard(data, cellRow, cellCol):
+    boardTopX, boardTopY = data.margin, data.margin
+    boardBottomX, boardBottomY = boardTopX + data.cols, boardTopY + data.rows
+    cellCol += data.margin
+    cellRow += data.margin
+    print('topX, topY', boardTopX, boardTopY)
+    print('bottomX, bottomY', boardBottomX, boardBottomY)
+    print('cellCol, cellRow',cellCol, cellRow)
+    # print(boardTopX <= cellCol <= boardBottomX)
+    # print(boardTopY <= cellRow + len(data.fallingPiece[0]) <= boardBottomY)
+    return boardTopX <= cellCol < boardBottomX and\
+            boardTopY <= cellRow + len(data.fallingPiece[0]) < boardBottomY
+
 
 
 
