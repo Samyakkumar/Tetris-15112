@@ -1,6 +1,6 @@
 # events-example0.py
 # Barebones timer, mouse, and keyboard events
-# 15-112, Summer 2, Homework 4.1
+# 15-112, Summer 2, Homework 4.2
 ######################################
 # Full name: Samyak Kumar
 # Section: C
