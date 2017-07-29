@@ -65,18 +65,27 @@ def init(data):
     data.margin = 30
     data.color = "blue"
     data.board = make2dList(data.rows, data.cols, data.color)
-    tetrisPieces = [ iPiece, jPiece, lPiece, oPiece, sPiece, tPiece, zPiece]
+    tetrisPieces = [ data.iPiece, data.jPiece, data.lPiece, data.oPiece, data.sPiece, data.tPiece, data.zPiece]
     tetrisPieceColors = [ "red", "yellow", "magenta", "pink", "cyan", "green",
     "orange"]
     data.tetrisPieces = tetrisPieces
     data.tetrisPieceColors = tetrisPieceColors
-    
-
+    newFallingPiece(data)
 
 
 def newFallingPiece(data):
-    currPiece = random.choice(data.tetrisPieces)
-    currColor = random.choice(data.tetrisPieceColors)
+    # Pick a falling piece and color randomly
+    fallingPiece = random.choice(data.tetrisPieces)
+    fallingPieceColor = random.choice(data.tetrisPieceColors)
+
+    data.fallingPiece = fallingPiece
+    data.fallingPieceColor = fallingPieceColor
+
+    # Position it in the middle of the screen
+    data.fallingPieceRow = 0
+    fallingPieceCols = len(fallingPiece[0])
+    data.fallingPieceCol = data.cols//2 - fallingPieceCols//2
+
 
 
 def mousePressed(event, data):
@@ -86,7 +95,7 @@ def mousePressed(event, data):
 
 def keyPressed(event, data):
     # use event.char and event.keysym
-    pass
+    newFallingPiece(data)
 
 
 def timerFired(data):
@@ -103,7 +112,14 @@ def drawGame(canvas, data):
     canvas.create_rectangle(0, 0, data.width, data.height, fill="orange")
 
     drawBoard(canvas, data)
+    drawFallingPiece(canvas, data)
 
+def drawFallingPiece(canvas, data):
+    for row in range(len(data.fallingPiece)):
+        for col in range(len(data.fallingPiece[row])):
+            cell = data.fallingPiece[row][col]
+            if cell: drawCell(canvas, row + data.fallingPieceRow,
+            col + data.fallingPieceCol, data.fallingPieceColor, data)
 
 def drawBoard(canvas, data):
     # iterate through the board
